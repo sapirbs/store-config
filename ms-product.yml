@@ -1,0 +1,15 @@
+server:
+  port: 0
+
+spring:
+  cloud:
+    consul:
+      discovery:
+        instanceId: product-service
+        health-check-interval: 15s
+      config:
+        management:
+          enabled: true
+management:
+  security:
+    enabled: false

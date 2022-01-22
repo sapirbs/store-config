@@ -1,0 +1,61 @@
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+      - id: user-service
+        uri: lb://ms-user
+        predicates:
+        - Path=/ms-user/**
+        filters:
+        - RewritePath=/ms-user/(?<segment>.*), /$\{segment}
+        - name: Hystrix
+          args:
+            name: monitor-ms-user
+            fallbackUri: forward:/fallback/ms-user
+      - id: product-service
+        uri: lb://ms-product
+        predicates:
+        - Path=/ms-product/**
+        filters:
+        - RewritePath=/ms-product/(?<segment>.*), /$\{segment}
+        - name: Hystrix
+          args:
+            name: monitor-ms-product
+            fallbackUri: forward:/fallback/ms-product 
+      - id: purchase-service
+        uri: lb://ms-purchase
+        predicates:
+        - Path=/ms-purchase/**
+        filters:
+        - RewritePath=/ms-purchase/(?<segment>.*), /$\{segment}
+        - name: Hystrix
+          args:
+            name: monitor-ms-purchase
+            fallbackUri: forward:/fallback/ms-purchase
+      - id: order-service
+        uri: lb://ms-order
+        predicates:
+        - Path=/ms-order/**
+        filters:
+        - RewritePath=/ms-order/(?<segment>.*), /$\{segment}
+        - name: Hystrix
+          args:
+            name: monitor-ms-order
+            fallbackUri: forward:/fallback/ms-order
+    consul:
+      discovery:
+        instanceId: gateway
+        health-check-interval: 5s
+      config:
+        management: 
+          enabled: true
+management:
+  security: 
+    enabled: false
+  endpoints:
+    web:
+      exposure:
+        include: hystrix.stream, info, health
