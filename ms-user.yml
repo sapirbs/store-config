@@ -5,7 +5,7 @@ spring:
   cloud:
     consul:
       discovery:
-        instanceId: user-service
+        instanceId: user-service:${random.value}
         health-check-interval: 15s
       config:
         management: 
